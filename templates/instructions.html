@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Instructions</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="header">📘 Safety Instructions</div>
+
+<div class="instructions-container">
+
+    <div class="instruction-card">
+        <h3>🚨 SOS Alert</h3>
+        <p>Press SOS button to instantly notify your emergency contacts with your live location.</p>
+    </div>
+
+    <div class="instruction-card">
+        <h3>📍 Live Tracking</h3>
+        <p>Your real-time location is shared so others can track your movement during danger.</p>
+    </div>
+
+    <div class="instruction-card">
+        <h3>🛣 Safest Route</h3>
+        <p>Find the safest path based on AI crime analysis and avoid risky areas.</p>
+    </div>
+
+    <div class="instruction-card">
+        <h3>🧠 AI Detection</h3>
+        <p>The system detects risky situations using AI and alerts automatically.</p>
+    </div>
+
+    <div class="instruction-card">
+        <h3>🚓 Police Help</h3>
+        <p>Nearest police station is suggested instantly for quick help.</p>
+    </div>
+
+    <br>
+
+    <button class="sos-btn" onclick="window.location.href='/dashboard'">
+        🔙 Back to Dashboard
+    </button>
+
+</div>
+
+</body>
+</html>

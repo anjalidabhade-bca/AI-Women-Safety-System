@@ -1,0 +1,11 @@
+flask
+flask-socketio
+eventlet
+mysql-connector-python
+pandas
+scikit-learn
+matplotlib
+folium
+opencv-python
+reportlab
+statsmodels

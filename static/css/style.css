@@ -1,0 +1,226 @@
+/* ===== GLOBAL STYLE ===== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #1e1e2f, #121212);
+    color: #fff;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #2b1055, #7597de);
+
+}
+
+/* ===== HEADER ===== */
+
+.header {
+    padding: 20px;
+    text-align: center;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* ===== GLASS CARD ===== */
+
+.card {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+	background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+}
+
+/* ===== SOS BUTTON ===== */
+
+.sos-btn {
+    background: linear-gradient(45deg, #ff0033, #ff4d4d);
+    border: none;
+    padding: 15px 35px;
+    font-size: 18px;
+    color: white;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: 0.3s;
+    animation: pulse 1.5s infinite;
+}
+
+.sos-btn:hover {
+    transform: scale(1.1);
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255,0,0,0.7); }
+    70% { box-shadow: 0 0 0 20px rgba(255,0,0,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,0,0,0); }
+}
+
+/* ===== MAP ===== */
+
+#map {
+    border-radius: 15px;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+/* ===== NOTIFICATION ===== */
+
+.notification {
+    position: fixed;
+    top: 20px;
+    right: -400px;
+    background: #ff0033;
+    padding: 15px 25px;
+    border-radius: 8px;
+    transition: 0.5s;
+    font-weight: bold;
+    z-index: 9999;
+}
+
+.notification.show {
+    right: 20px;
+}
+
+/* ===== ADMIN DASHBOARD CARDS ===== */
+
+.stat-box {
+    display: inline-block;
+    width: 30%;
+    margin: 1%;
+    padding: 20px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    text-align: center;
+    font-size: 20px;
+    transition: 0.3s;
+}
+
+.stat-box:hover {
+    transform: translateY(-5px);
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media(max-width: 768px) {
+    .stat-box {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+}
+
+/* ========================================= */
+/* 🔥 NEW ADDED STYLES (PROFILE, INSTRUCTIONS, LAWS) */
+/* ========================================= */
+
+
+/* ===== INSTRUCTIONS ===== */
+
+.instructions-container {
+    width: 85%;
+    margin: auto;
+    margin-top: 40px;
+    text-align: center;
+}
+
+.instruction-card {
+    background: rgba(255,255,255,0.08);
+    padding: 20px;
+    margin: 15px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    transition: 0.3s;
+}
+
+.instruction-card:hover {
+    transform: scale(1.05);
+    background: rgba(255,255,255,0.15);
+}
+
+/* ===== LAWS ===== */
+
+.laws-container {
+    width: 85%;
+    margin: auto;
+    margin-top: 40px;
+}
+
+.law-card {
+    background: rgba(255,255,255,0.08);
+    padding: 20px;
+    margin: 15px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    transition: 0.3s;
+}
+
+.law-card:hover {
+    transform: scale(1.05);
+    background: rgba(255,255,255,0.15);
+}
+
+.law-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ff4d4d;
+}
+
+.law-desc {
+    margin-top: 10px;
+}
+/* HEADER FIX */
+.header-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* FIX LOGO SIZE */
+.main-logo {
+    width: 100px;
+    height: auto;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+}
+
+/* REMOVE BIG BOX EFFECT */
+.center-logo-box {
+    display: none;
+}
+
+/* HEADER TEXT */
+.header-container h1 {
+    font-size: 28px;
+    font-weight: bold;
+}
+.sidebar-logo {
+    width: 80px;
+    height: auto;
+    margin-bottom: 10px;
+}
+.card {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px;
+}
+.sidebar-line {
+    border: none;
+    height: 1px;
+    background: #ff4b2b;
+    box-shadow: 0 0 8px #ff4b2b;
+    margin: 15px 0;
+}
+
+.sidebar {
+    background: linear-gradient(to bottom, #000000, #1a1a1a);
+}

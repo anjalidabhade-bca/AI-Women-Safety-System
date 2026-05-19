@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+    font-family: Arial;
+    background: #111;
+    color: white;
+}
+
+.container {
+    margin-left: 20px;
+    padding: 20px;
+}
+
+.card {
+    background: #1e1e1e;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 10px;
+    display: inline-block;
+    width: 200px;
+    text-align: center;
+}
+
+.chart-box {
+    width: 45%;
+    display: inline-block;
+    margin: 20px;
+}
+
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid gray;
+    text-align: center;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1 style="text-align:center;">🚨 Admin Dashboard</h1>
+
+<div class="container">
+
+<!-- STATS -->
+<div class="card">
+    <h3>Total Users</h3>
+    <h2>{{ total_users }}</h2>
+</div>
+
+<div class="card">
+    <h3>Total Incidents</h3>
+    <h2>{{ total_incidents }}</h2>
+</div>
+
+<div class="card">
+    <h3>High Risk</h3>
+    <h2>{{ high }}</h2>
+</div>
+
+<!-- CHARTS -->
+<div class="chart-box">
+    <h3>Risk Distribution</h3>
+    <canvas id="riskChart"></canvas>
+</div>
+
+<div class="chart-box">
+    <h3>Monthly Trend</h3>
+    <canvas id="trendChart"></canvas>
+</div>
+
+<!-- TABLE -->
+<h2>Recent Incidents</h2>
+
+<table>
+<tr>
+    <th>Latitude</th>
+    <th>Longitude</th>
+    <th>Risk</th>
+    <th>Month</th>
+</tr>
+
+{% for i in incidents %}
+<tr>
+    <td>{{ i[0] }}</td>
+    <td>{{ i[1] }}</td>
+    <td>{{ i[2] }}</td>
+    <td>{{ i[3] }}</td>
+</tr>
+{% endfor %}
+</table>
+
+</div>
+
+<!-- CHART SCRIPT -->
+<script>
+
+// PIE CHART (Risk)
+new Chart(document.getElementById("riskChart"), {
+    type: "pie",
+    data: {
+        labels: ["Low", "Medium", "High"],
+        datasets: [{
+            data: [{{ low }}, {{ medium }}, {{ high }}]
+        }]
+    }
+})
+
+// LINE CHART (Forecast / Trend)
+new Chart(document.getElementById("trendChart"), {
+    type: "line",
+    data: {
+        labels: {{ forecast_labels|tojson }},
+        datasets: [{
+            label: "Incidents",
+            data: {{ forecast_values|tojson }}
+        }]
+    }
+})
+
+</script>
+
+</body>
+</html>

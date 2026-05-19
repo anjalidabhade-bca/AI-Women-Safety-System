@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Login</title>
+
+<style>
+body {
+    background: linear-gradient(to right, #a18cd1, #fbc2eb); /* light purple gradient */
+    font-family: Arial;
+    text-align: center;
+    margin-top: 100px;
+}
+
+/* LOGIN BOX */
+.login-box {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    display: inline-block;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+/* INPUT FIELDS */
+input {
+    padding: 10px;
+    margin: 10px;
+    width: 220px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+/* BUTTON */
+button {
+    padding: 10px 20px;
+    background: #7b2cbf; /* purple button */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #5a189a;
+}
+
+/* TITLE */
+h2 {
+    color: #5a189a;
+}
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100vh;
+margin: 0;
+</style>
+
+</head>
+
+<body>
+
+<div class="login-box">
+    <h2>🔐 Admin Login</h2>
+
+    <form method="POST">
+        <input type="text" name="email" placeholder="Admin ID"><br>
+        <input type="password" name="password" placeholder="Password"><br>
+        <button type="submit">Login</button>
+    </form>
+</div>
+
+</body>
+</html>

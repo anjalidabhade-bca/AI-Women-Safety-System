@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Safest Route</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css"/>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+<style>
+
+body{
+font-family:Arial;
+text-align:center;
+background:#f4f6f9;
+}
+
+#map{
+height:500px;
+margin-top:20px;
+width:90%;
+margin:auto;
+border-radius:10px;
+}
+
+input{
+padding:10px;
+width:250px;
+border-radius:5px;
+border:1px solid gray;
+}
+
+button{
+padding:10px 20px;
+background:#c40000;
+color:white;
+border:none;
+cursor:pointer;
+border-radius:5px;
+}
+
+#riskLevel{
+font-size:18px;
+font-weight:bold;
+margin-top:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>🛣 Find Safest Route</h2>
+
+<input type="text" id="source" placeholder="Enter Source (Example: Pune)">
+<br><br>
+
+<input type="text" id="destination" placeholder="Enter Destination (Example: Mumbai)">
+<br><br>
+
+<button onclick="findRoute()">Find Safe Route</button>
+
+<p id="riskLevel"></p>
+
+<div id="map"></div>
+
+<script>
+
+var map = L.map('map').setView([18.5204,73.8567],10)
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+maxZoom:19
+}).addTo(map)
+
+var routeControl
+var userMarker
+
+
+// Example danger zones (crime hotspots)
+
+var dangerZones = [
+[18.5314,73.8446],
+[18.5167,73.8562],
+[18.5220,73.8700]
+]
+
+// draw danger circles
+
+dangerZones.forEach(function(zone){
+
+L.circle(zone,{
+color:'red',
+radius:300
+}).addTo(map).bindPopup("? High Risk Area")
+
+})
+
+
+
+
+// Live moving user location like Uber
+
+navigator.geolocation.watchPosition(function(position){
+
+let lat = position.coords.latitude
+let lon = position.coords.longitude
+
+// move map center to user location
+map.setView([lat, lon], 15)
+
+// update marker
+if(userMarker){
+userMarker.setLatLng([lat,lon])
+}else{
+userMarker = L.marker([lat,lon]).addTo(map)
+.bindPopup("?? Your Live Location")
+.openPopup()
+}
+
+})
+
+
+
+
+// Find route function
+
+function findRoute(){
+
+let source = document.getElementById("source").value
+let destination = document.getElementById("destination").value
+
+
+fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${source}`)
+.then(res=>res.json())
+.then(src=>{
+
+fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${destination}`)
+.then(res=>res.json())
+.then(dest=>{
+
+let srcLat = src[0].lat
+let srcLon = src[0].lon
+
+let destLat = dest[0].lat
+let destLon = dest[0].lon
+
+
+// AI Risk Detection
+
+let risk = "LOW"
+
+dangerZones.forEach(function(zone){
+
+let distance = Math.sqrt(
+Math.pow(zone[0]-destLat,2)+
+Math.pow(zone[1]-destLon,2)
+)
+
+if(distance < 0.01){
+risk = "HIGH"
+}
+
+})
+
+if(risk === "HIGH"){
+document.getElementById("riskLevel").innerHTML =
+"Route Risk Level: HIGH (Danger Area Nearby)"
+document.getElementById("riskLevel").style.color="red"
+}
+else{
+document.getElementById("riskLevel").innerHTML =
+"Route Risk Level: LOW (Safe Route)"
+document.getElementById("riskLevel").style.color="green"
+}
+
+
+
+if(routeControl){
+map.removeControl(routeControl)
+}
+
+routeControl = L.Routing.control({
+
+waypoints:[
+L.latLng(srcLat,srcLon),
+L.latLng(destLat,destLon)
+],
+
+lineOptions:{
+styles:[{color:'green',weight:6}]
+},
+
+createMarker: function() { return null }
+
+}).addTo(map)
+
+})
+
+})
+
+}
+
+</script>
+
+</body>
+</html>

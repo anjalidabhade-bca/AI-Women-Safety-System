@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Women Safety Dashboard</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+
+<style>
+
+/* ===== SIDEBAR ===== */
+
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background: rgba(0,0,0,0.85);
+    color: white;
+    padding: 20px;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+.sidebar h2 {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.sidebar a {
+    display: block;
+    padding: 12px;
+    margin-bottom: 10px;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    background: #c40000;
+}
+
+.main-content {
+    margin-left: 240px;
+}
+
+</style>
+
+</head>
+
+<body>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div style="background:red; color:white; padding:10px; text-align:center;">
+      {% for msg in messages %}
+        <p>{{ msg }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+<div style="text-align:center;">
+    <img src="{{ url_for('static', filename='sidebar_logo.png') }}" class="sidebar-logo">
+    <h3>Safety System</h3>
+</div>
+    <hr class="sidebar-line">
+    <a href="/dashboard" class="active">🏠 Dashboard</a>
+    <a href="/profile">👤 Profile</a>
+    <a href="/instructions">📘 Instructions</a>
+    <a href="/laws">⚖ Laws</a>
+    <a href="/safest_route">🛣 Safe Route</a>
+    <a href="/live_tracking">📍 Live Tracking</a>
+	<p style="text-align:center; margin-top:20px;">
+    Welcome, {{ name }}
+</p>
+
+<a href="/logout" style="background:#ff4d4d; text-align:center;">
+    🚪 Logout
+</a>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+
+<!-- HEADER -->
+<div class="header-container">
+    <img src="{{ url_for('static', filename='logo.png') }}" class="main-logo">
+    <h1>Empowered Women, Safer World.</h1>
+</div>
+
+
+
+
+<div class="header">Women Safety Intelligence Dashboard</div>
+
+<div class="card" style="text-align:center;">
+
+<button class="sos-btn" onclick="triggerSOS()">
+🚨 EMERGENCY SOS
+</button>
+
+<br><br>
+
+<button class="sos-btn" onclick="stopSharing()">
+✅ I AM SAFE
+</button>
+
+<br><br>
+
+<a href="tel:1091">
+<button class="sos-btn">
+📞 WOMEN HELPLINE (1091)
+</button>
+</a>
+
+</div>
+
+<div class="card" style="text-align:center;">
+<h3>Select Your Situation</h3>
+
+<button class="sos-btn" onclick="sendDistress('Someone is following me')">
+⚠ Someone Is Following Me
+</button>
+
+<br><br>
+
+<button class="sos-btn" onclick="sendDistress('I feel unsafe')">
+🚨 I Feel Unsafe
+</button>
+
+<br><br>
+
+<a href="/safest_route">
+<button class="sos-btn">
+🛣 Find Safest Route
+</button>
+</a>
+
+</div>
+
+<div class="card">
+<div id="map" style="height:500px;"></div>
+</div>
+
+<audio id="sirenSound"
+src="{{ url_for('static', filename='sounds/sos.mp3') }}"></audio>
+
+<script>
+
+var map = L.map('map').setView([18.5204,73.8567],12);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+.addTo(map);
+
+var socket = io();
+
+let heatLayer = L.heatLayer([], {radius:25}).addTo(map);
+
+socket.on("new_marker",function(data){
+
+L.marker([data.lat,data.lng])
+.addTo(map)
+.bindPopup("Risk: "+data.risk)
+
+heatLayer.addLatLng([data.lat,data.lng])
+
+})
+
+let sharingInterval=null
+
+function triggerSOS(){
+
+document.getElementById("sirenSound").play()
+
+if(sharingInterval!==null){
+return
+}
+
+sendLocation(true)
+
+sharingInterval=setInterval(function(){
+sendLocation(false)
+},5000)
+
+}
+
+function sendLocation(firstAlert=false){
+
+navigator.geolocation.getCurrentPosition(function(pos){
+
+fetch("/predict_risk",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+lat:pos.coords.latitude,
+lng:pos.coords.longitude,
+crime_rate:5,
+hour:new Date().getHours(),
+first_alert:firstAlert
+})
+})
+
+})
+
+}
+
+function stopSharing(){
+
+if(sharingInterval){
+clearInterval(sharingInterval)
+sharingInterval=null
+alert("Location sharing stopped. You are safe.")
+}
+
+}
+
+function sendDistress(message){
+
+fetch("/check_distress",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({message:message})
+})
+.then(res=>res.json())
+.then(data=>{
+if(data.distress){
+alert("Distress detected! SOS triggered.")
+triggerSOS()
+}
+else{
+alert("Status saved.")
+}
+})
+
+}
+
+fetch("/heatmap_data")
+.then(res=>res.json())
+.then(data=>{
+let points=[]
+data.forEach(row=>{
+points.push([row[0],row[1]])
+})
+heatLayer.setLatLngs(points)
+})
+
+</script>
+
+</div>
+
+</body>
+</html>
